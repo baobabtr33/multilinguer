@@ -1,18 +1,35 @@
-#' Install conda
+#' install conda
 #'
-#' @details
-#' Download the [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-#' installer, and use it to install Miniconda.
-#' All function and descriptions from [reticulate package](https://github.com/rstudio/reticulate/blob/master/R/miniconda.R)
+#' Defualt is Miniconda3. Other options are not this package scope.
 #'
-#' @examples
-#' \dontrun{
-#'   install_conda()
-#' }
+#' @param path installation path. Defualt is userhome/Miniconda3
+#' @param silent silent installation with Justme, add PATH options. Defualt is TRUE.
+#' @param quiet print step or not. Defualt is FALSE.
+#'
+#' @importFrom fs file_delete
+#'
 #' @export
-install_conda <- function() {
-  message("Please install reticulate(>= 1.14) package and use install_miniconda() function.")
+install_conda <- function(path = conda_loc(),
+                          silent = T,
+                          quiet = F) {
+  os <- get_os()
+  dest <- conda_dest_loc(os)
+  path <- conda_loc()
+
+  dependency(os)
+
+  if (!quiet) cat("Download conda\n")
+  down_conda(os, dest, quiet)
+
+  if (!quiet) cat("Install conda\n")
+  install_exec(os, dest, path, silent)
+
+  fs::file_delete(dest)
+  if (!quiet) cat("Installation complete\n")
 }
+#' @rdname install_conda
+#' @export
+install_miniconda <- install_conda
 
 #' install `java`
 #'
